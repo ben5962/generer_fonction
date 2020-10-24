@@ -1,7 +1,10 @@
+#!/bin/bash
 # produire_nbargs called with wrong number of args sw after refactoring of nb of args.
 # find and correct
 #refactor if necessary and prudent
 #[ $(
+
+:<<COMMENTEDOUT
 VRAI=0
 FAUX=1
 prudent(){
@@ -36,3 +39,13 @@ sed --in-place=.bak 's/'"$chaine_eronnee"'/produire_nbargs \"\$PARAMS\" \"\$NOM_
 #prudent && necessaire && corriger_appel_de_produire_nbargs
 necessaire
 prudent && necessaire && corriger_appel_de_produire_nbargs
+COMMENTEDOUT
+#:<<COMMENT
+for f in $(find . -type f ! -path '*.txt' ! -path '*.swp' !  -path '*.git*' ); do 
+echo "trying $f"
+#sed -n 's/source \([a-z]+\)/declare -f \1 \|\| source \1 / p;' "${f}"
+grep  'source' $f
+done
+
+
+
