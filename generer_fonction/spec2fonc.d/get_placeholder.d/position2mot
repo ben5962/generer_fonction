@@ -1,0 +1,12 @@
+die(){ echo "$*" 2>&1; exit 1; }
+position2mot(){ 
+#NARGS
+[ $# -eq 2 ] || die "position2mot position listemots -> mot_en_posit_position"
+# init var
+local position="$1"
+local liste_mots="$2"
+# le nieme mot est la nieme ligne de sed si les mots sont convertis en ligne
+echo "$liste_mots" |tr ' ' '\n' |sed  -n "$position"'p;'
+
+
+ }

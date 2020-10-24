@@ -1,0 +1,23 @@
+remplacer_corps(){ 
+# sed regex expl
+# https://www.grymoire.com/Unix/Sed.html#uh-4
+# "using \1 to keep part of the pattern"
+
+mark_important="\("
+anything_not_opening_accolade_several_times="[^{]*"
+accolade="{"
+end_mark_important="\)"
+anything_not_clothing_accolade_several_times="[^}]*"
+clothing_accolade="}"
+
+# dnw unless i say to do it 
+sed -n 's/'${mark_important}\
+${anything_not_opening_accolade_several_times}\
+${accolade}\
+${end_mark_important}\
+${anything_not_clothing_accolade_several_times}\
+${mark_important}\
+${clothing_accolade}\
+${end_mark_important}\
+'/\1'"$1"'\2/p;' ;}
+

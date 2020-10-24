@@ -1,0 +1,8 @@
+renvoyer_skel_fonction(){
+die(){ echo "$*" 1>&2; exit 1;  } 
+#nbargs
+[ $# -eq 1 ] || die "renvoyer_skel_fonction NOMFONCTION"
+#main
+NOM_FONC="$1"
+echo "$NOM_FONC(){ echo \" \" ; }"
+}

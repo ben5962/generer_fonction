@@ -1,0 +1,6 @@
+chaine2tableau(){
+local CHAINE_USAGE=""
+declare -a TAB_PARAM
+IFS=',' read -ra TAB_PARAM <<< "$PARAMETRES_NON_SEPARES"
+echo $TAB_PARAM[@]
+}

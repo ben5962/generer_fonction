@@ -1,0 +1,9 @@
+ajoute_ligne_a_fichier(){
+# ajoute_ligne_a_fichier "aa" fichier.txt ajoute la ligne aa à la fin du fichier.txt
+die() { echo "$*" 1>&2 ; exit 1; }
+
+[ $# -eq 2 ] || die "ajoute_ligne_a_fichier chaine fichier"
+chaine="$1" fichier="$2"
+sed --in-place=.tmp '/$/ a\'"$1"
+}
+

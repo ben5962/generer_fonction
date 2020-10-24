@@ -1,0 +1,15 @@
+mise_au_point(){ map="faux";  [ "$map" = "vrai" ] && echo "[PRODUIRE DIE]: $1"; }
+racine=$(find ~ -name depot_generer_fonction -type d)
+SKEL=$(find $racine -name renvoyer_skel_fonction |head -n 1)
+mise_au_point "skel vaut: $SKEL"
+source $SKEL
+mise_au_point "ai source $SKEL"
+P_DIE=$(find $racine -name produire_die)
+[ ! -d $P_DIE.d ] && mkdir $P_DIE.d
+[ ! -f $P_DIE.d/remplacer_corps ] && \
+renvoyer_skel_fonction "remplacer_corps" > $P_DIE.d/remplacer_corps
+for g in $(find $P_DIE.d -type f ! -path '*.swp' ); do
+source $g;
+mise_au_point "[PRODUIRE_DIE] :ai source $g"
+done  
+produire_die(){ renvoyer_skel_fonction "die" |remplacer_corps "echo \"\$*\" 1\>\&2; exit 1;";  }

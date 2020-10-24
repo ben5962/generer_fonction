@@ -1,0 +1,55 @@
+#includes
+racine=$(find ~ -name depot_generer_fonction -type d)
+
+CUR_SCE=$(find ~ -name spec2fonc)
+
+m_a_p(){ map="FAUX"; [ "${map}" = "VRAI" ] && echo "[SPEC2FONC] : $1"; } 
+
+
+[ ! -d $CUR_SCE ] && mkdir -p $CUR_SCE.d
+[ ! -f $CUR_SCE.d/renvoyer_skel_fonction ] && echo " " > $CUR_SCE.d/renvoyer_skel_fonction
+for g in $(find $CUR_SCE.d -type f ! -path '*.swp' ) ; do
+source $g
+m_a_p "ai source $g"
+done
+
+for f in  $(find ~ -name 'remplacer_corps'); do 
+ source $f;
+
+  m_a_p "ai sourcé $f"
+done
+
+
+# dyn crea
+f_cr_dyn="produire_die produire_nbargs produire_main_todo produire_main_call produire_placeholders get_placeholder remplacer_placeholder prevent_sed_from_interpreting_and"
+
+for f in  $(echo "$f_cr_dyn" | tr ' ' '\n') ; do
+[ ! -f $CUR_SCE.d/$f ] && renvoyer_skel_fonction  $f > $CUR_SCE.d/$f
+done
+
+# includes 2
+for f in  $(echo "$f_cr_dyn" | tr ' ' '\n') ; do
+source $CUR_SCE.d/$f && m_a_p "ai sourcé $CUR_SCE.d/$f"
+done
+
+
+spec2fonc(){
+die(){ echo "$*" 1>&2; exit 1; }
+#nbargs
+[ $# -ne 2 ] && die "spec2fonc nomfonc paramssepparvirgenunechaine"
+#init vars
+NOM_FONC="$1"; PARAMS="$2"
+#main
+# prepare...
+PH_die=$(get_placeholder 'produire_die' 'produire_die produire_nbargs produire_main_todo produire_main_call')
+produire_die_stripped="$(produire_die |prevent_sed_from_interpreting_and )"
+# go!
+renvoyer_skel_fonction $NOM_FONC |\
+remplacer_corps "$(produire_placeholders 'produire_die produire_nbargs produire_main_todo produire_main_call')" |\
+remplacer_placeholder "${PH_die}" "${produire_die_stripped}"
+produire_nbargs "$PARAMS"
+produire_main_todo
+produire_main_call
+echo " "
+
+}

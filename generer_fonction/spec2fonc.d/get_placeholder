@@ -1,0 +1,29 @@
+die(){ echo "$*" 2>&1; exit 1; }
+muaup(){ map="faux"; [ "$map" = "vrai" ] && echo "[GET_PLACEHOLDER]: $1"; }
+#dyn
+ICI="$(find ~ -name 'get_placeholder' -type f )"
+[ ! -d ${ICI}.d ] && mkdir "${ICI}.d" 
+for i in $(echo "position2mot position" |tr ' ' '\n'); do
+[ ! -f "${ICI}.d/$i" ]  && renvoyer_skel_fonction $i > "${ICI}.d/$i"
+done
+#includes
+source "$(find ~ -name 'produire_placeholders' -type f)"
+source "$(find ~ -name 'renvoyer_skel_fonction' -type f)"
+
+
+#main
+get_placeholder(){
+#nbargs
+[ $# -eq 2 ] || die "get_placeholder mot liste_de_mots -> renvoie le placeholder de meme position que la position du mot dans liste_de_mots" 
+# vars
+local mot="$1"
+local liste_mots="$2"
+
+local liste_placeholders=$(produire_placeholders "$liste_mots")
+muaup "liste_placeholders vaut $liste_placeholders"
+#echo "$liste" |wc --words
+local pos=$(position "$mot" "$liste_mots")
+muaup "pos vaut: $pos"
+placeholder=$(position2mot "${pos}" "$liste_placeholders")
+echo "$placeholder" 
+}

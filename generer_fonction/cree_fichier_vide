@@ -1,0 +1,8 @@
+cree_fichier_vide(){
+# fichier_vierge "essai.txt" cree fich essai.txt vide
+die() { echo "$*" 1>&2 ; exit 1; }
+[ $# -eq 1 ] || die "$0 nom_fichier"
+
+echo > $1
+echo  " " >> $1
+}

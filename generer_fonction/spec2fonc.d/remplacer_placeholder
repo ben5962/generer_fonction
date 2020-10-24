@@ -1,0 +1,10 @@
+die(){ echo "$*" 1>&2; exit 1; }
+remplacer_placeholder(){ 
+#nbargs
+[ $# -eq 2 ] || die "remplacer_placeholder placeholder remplacement"
+#initvars
+local placeholder="$1"
+local remplacement="$2"
+#main
+sed 's/'"$placeholder"'/'"$remplacement"'/;'
+ }

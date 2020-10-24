@@ -1,0 +1,21 @@
+produire_placeholders(){
+#nbargs
+die(){ echo "$*" 1>&2; exit 1; }
+[ $# -ne 1 ] && die "produire_placeholders chaineargssepespace"
+#init var 
+cpt="1"
+CHAINE_PH=""
+CHAINE_FONCTIONS_DESTINATAIRES_DES_PLACEHOLDERS="$1"
+#main
+
+while read PLACEHOLDER; do
+CHAINE_PH="${CHAINE_PH}PH_$cpt "
+cpt=$( expr $cpt + 1 )
+
+#cpt="$(echo $cpt+1 ¦ bc)"
+#echo $cpt
+#echo "$CHAINE_PH"
+done <<<$(echo "$1" |tr ' ' '\n')
+echo "$CHAINE_PH"
+ }
+
