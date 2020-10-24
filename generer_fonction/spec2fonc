@@ -47,7 +47,7 @@ produire_die_stripped="$(produire_die |prevent_sed_from_interpreting_and )"
 renvoyer_skel_fonction $NOM_FONC |\
 remplacer_corps "$(produire_placeholders 'produire_die produire_nbargs produire_main_todo produire_main_call')" |\
 remplacer_placeholder "${PH_die}" "${produire_die_stripped}"
-produire_nbargs "$PARAMS"
+produire_nbargs "$PARAMS" "$NOM_FONC"
 produire_main_todo
 produire_main_call
 echo " "

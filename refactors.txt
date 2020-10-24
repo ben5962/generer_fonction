@@ -1,0 +1,38 @@
+# produire_nbargs called with wrong number of args sw after refactoring of nb of args.
+# find and correct
+#refactor if necessary and prudent
+#[ $(
+VRAI=0
+FAUX=1
+prudent(){
+if test $(cd $(find ~ -name 'generer_fonction' -type d) && \
+grep -r -P 'produire_nbargs [a-zA-Z_$\"]+$' |wc --lines)\
+ -eq 1; then
+#echo "prudent"
+return "$VRAI"
+else
+#echo "pas prudent"
+return "$FAUX"
+fi
+}
+
+necessaire(){
+#dnw. previous idea with sentinel files dnw either (filebomb, racecond)
+#@maybe refactor lib after this one?
+[ $(grep -r -P 'produire_nbargs [a-zA-Z_\"$]+$' --files-with-match   |wc) -neq 0 ]  && mmm "necessaire: ai trouvé un appel avec un seul param " && return "$VRAI"
+echo "pas necessaire" && return "$FAUX"
+}
+
+corriger_appel_de_produire_nbargs(){
+longue_vue=$(grep -r -P -B 10 'produire_nbargs [a-zA-Z_$\"]+$')
+chaine_eronnee="$(grep -r -P 'produire_nbargs [a-zA-Z$\"]+$' --no-filename)"
+# sed grymoire correct in place
+#sed 's/'"$chaine_eronnee"'/produire_nbargs \"\$PARAMS\" \"\$NOM_FONC\"/;' $(grep -r -P 'produire_nbargs [a-zA-Z$\"]+$' --files-with-matches)
+sed --in-place=.bak 's/'"$chaine_eronnee"'/produire_nbargs \"\$PARAMS\" \"\$NOM_FONC\"/;' $(grep -r -P 'produire_nbargs [a-zA-Z$\"]+$' --files-with-matches)
+
+#) -eq 1 ] && mmm "prudent"
+}
+
+#prudent && necessaire && corriger_appel_de_produire_nbargs
+necessaire
+prudent && necessaire && corriger_appel_de_produire_nbargs

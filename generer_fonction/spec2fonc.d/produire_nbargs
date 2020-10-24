@@ -3,51 +3,22 @@ p_vars(){ set -o posix; echo "$(declare)"   ; set +o posix ; }
 racine(){ echo "$(find -name generer_fonction -type d)" ; }
 die(){ echo "$*" 1>&2 ; exit 1; }
 
-#refactor if necessary and prudent
-#[ $(
-VRAI=0
-FAUX=1
-prudent(){
-if test $(cd $(find ~ -name 'generer_fonction' -type d) && \
-grep -r -P 'produire_nbargs [a-zA-Z_$\"]+$' |wc --lines)\
- -eq 1; then
-#echo "prudent"
-return "$VRAI"
-else
-#echo "pas prudent"
-return "$FAUX"
-fi
-}
-
-necessaire(){
-[ -f .produire_nbargs_call_with_wrong_param_number ] && return "$VRAI"
-return "$FAUX"
-}
-prudent && necessaire && mmm "on y va!"
-
-corriger_appel_de_produire_nbargs(){
-longue_vue=$(grep -r -P -B 10 'produire_nbargs [a-zA-Z_$\"]+$')
-chaine_eronnee="$(grep -r -P 'produire_nbargs [a-zA-Z$\"]+$' --no-filename)"
-# sed grymoire correct in place
-#sed 's/'"$chaine_eronnee"'/produire_nbargs \"\$PARAMS\" \"\$NOM_FONC\"/;' $(grep -r -P 'produire_nbargs [a-zA-Z$\"]+$' --files-with-matches)
-#sed --in-place=.bak 's/'"$chaine_eronnee"'/produire_nbargs \"\$PARAMS\" \"\$NOM_FONC\"/;' $(grep -r -P 'produire_nbargs [a-zA-Z$\"]+$' --files-with-matches)
-
-#) -eq 1 ] && mmm "prudent"
-}
-
 produire_nbargs(){ 
 #includes
-mmm "getbparam se trouve : $(find ~ -name 'getnbparam' -type f)"
+#mmm "getbparam se trouve : $(find ~ -name 'getnbparam' -type f)"
 source $(find  ~ -name 'getnbparam' -type f)
 #nbargs 
-[ $# -eq 2 ] || touch .produire_nbargs_call_with_wrong_param_number && die "produire_nbargs chaineParamsSepParVirgule nomfonc"
+mmm "nbargs: $#"
+[ $# -eq 2 ] || die "produire_nbargs chaineParamsSepParVirgule nomfonc"
 # init vars
 local PARAMS="$1"
 local NOMFONC="$2"
-local nbargs=$(getnbparam "," "$PARAMS")
-[ -f ".produire_nbargs_call_with_wrong_param_number" ] && rm .produire_nb_args_call_with_wrong_param_number
+
 #main
-echo "$(creer_chaine_pas_le_bon_nb_args) $(creer_chaine_die_with_usage $PARAMS)"
+local nbargs=$(getnbparam "," "$PARAMS")
+ch_si_err_nbargs=$(creer_chaine_pas_le_bon_nb_args)
+ch_d_w_usage=$(creer_chaine_die_with_usage $PARAMS)
+echo "${ch_si_err_nbargs} ${ch_d_w_usage}"
 
 
 
