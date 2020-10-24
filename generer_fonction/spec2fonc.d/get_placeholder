@@ -7,9 +7,12 @@ for i in $(echo "position2mot position" |tr ' ' '\n'); do
 [ ! -f "${ICI}.d/$i" ]  && renvoyer_skel_fonction $i > "${ICI}.d/$i"
 done
 #includes
-source "$(find ~ -name 'produire_placeholders' -type f)"
-source "$(find ~ -name 'renvoyer_skel_fonction' -type f)"
-
+for f in $(echo "produire_placeholders renvoyer_skel_fonction" |tr ' ' '\n'); do
+chem_fich=$(find ~ -name "$f" -type f)
+declare -F "$f" >/dev/null || source "$chem_fich" && declare -F "$chem_fich" >/dev/null && echo "$f fait désormais partie de l environnement" |journald-cat -t generer_fonction:get_placeholder -p info
+#source "$(find ~ -name 'produire_placeholders' -type f)"
+#source "$(find ~ -name 'renvoyer_skel_fonction' -type f)"
+done
 
 #main
 get_placeholder(){
@@ -20,10 +23,10 @@ local mot="$1"
 local liste_mots="$2"
 
 local liste_placeholders=$(produire_placeholders "$liste_mots")
-muaup "liste_placeholders vaut $liste_placeholders"
+echo "liste_placeholders vaut $liste_placeholders" |journald-cat -t generer_fonction:get_placeholder -p info
 #echo "$liste" |wc --words
 local pos=$(position "$mot" "$liste_mots")
-muaup "pos vaut: $pos"
+echo "pos vaut: $pos"|journald-cat -t generer_fonction:get_placeholder -p info
 placeholder=$(position2mot "${pos}" "$liste_placeholders")
 echo "$placeholder" 
 }

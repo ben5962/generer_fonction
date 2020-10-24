@@ -11,7 +11,7 @@ echo "generer_fonction nom_fonc espace params_separes_par_virgules espace result
 # init vars
 NOM_FONC="$1"; PARAMETRES_NON_SEPARES="$2"; RESULTAT="$3"
 # includes
-for f in ./$(basename $0 .sh); do declare -F $f || source $f; mise_au_point "[GENERER_FONCTION] : sourcing $f"; done
+for f in ./$(basename $0 .sh); do declare -F $f >/dev/null || source $f >/dev/null ; echo "[GENERER_FONCTION] : sourcing $f" | journald-cat -t generer_fonction:main -p info; done
 # main
 main(){
 cree_fichier_vide  "$NOM_FONC"

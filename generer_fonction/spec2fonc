@@ -8,28 +8,29 @@ m_a_p(){ map="FAUX"; [ "${map}" = "VRAI" ] && echo "[SPEC2FONC] : $1"; }
 
 [ ! -d $CUR_SCE ] && mkdir -p $CUR_SCE.d
 [ ! -f $CUR_SCE.d/renvoyer_skel_fonction ] && echo " " > $CUR_SCE.d/renvoyer_skel_fonction
+local g=""
 for g in $(find $CUR_SCE.d -type f ! -path '*.swp' ) ; do
-source $g
-m_a_p "ai source $g"
+declare -F "$g" > /dev/null ||  source "$g" >/dev/null  && echo "ai source $g" |systemd-cat -t generer_fonction:spec2fonc -p info
 done
 
-for f in  $(find ~ -name 'remplacer_corps'); do 
- source $f;
-
-  m_a_p "ai sourcé $f"
+local g=""
+for g in  $(find ~ -name 'remplacer_corps'); do 
+declare -F "$g" > /dev/null ||  source "$g" > /dev/null  &&   echo "ai sourcé $g" |systemd-cat -t generer_fonction:spec2fonc -p info
 done
 
 
 # dyn crea
 f_cr_dyn="produire_die produire_nbargs produire_main_todo produire_main_call produire_placeholders get_placeholder remplacer_placeholder prevent_sed_from_interpreting_and"
 
-for f in  $(echo "$f_cr_dyn" | tr ' ' '\n') ; do
-[ ! -f $CUR_SCE.d/$f ] && renvoyer_skel_fonction  $f > $CUR_SCE.d/$f
+local g
+for g in  $(echo "$f_cr_dyn" | tr ' ' '\n') ; do
+[ ! -f $CUR_SCE.d/$g ] && renvoyer_skel_fonction  $g > $CUR_SCE.d/$g
 done
 
 # includes 2
-for f in  $(echo "$f_cr_dyn" | tr ' ' '\n') ; do
-source $CUR_SCE.d/$f && m_a_p "ai sourcé $CUR_SCE.d/$f"
+local g
+for g in  $(echo "$f_cr_dyn" | tr ' ' '\n') ; do
+declare -F "$g" >/dev/null ||  source "$CUR_SCE.d/$g" > /dev/null  && echo "ai sourcé $CUR_SCE.d/$g" |systemd-cat -t generer_fonction:spec2fonc -p info
 done
 
 

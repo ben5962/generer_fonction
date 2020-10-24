@@ -9,46 +9,12 @@ racine=$(find ~ -type d -name generer_fonction |head -n 1)
 
 
 sourcer(){
-for f in $(find "$racine" -type f ! -path '*.swp' ! -path '*.git*' ! -path '*.txt'); do
-echo "$f"; source "$f"
+for f in $(find "$racine" -type f ! -path '*.swp' ! -path '*.git*' ! -path '*.txt' ! -path '*test*' ); do
+#echo "$f"; 
+declare -F $( basename "$f" ) > /dev/null || echo "$(basename $f) est hors env" |systemd-cat -t generer_fonction:test_generer_foncton -p info && source "$f" > /dev/null  &&  declare -F $(basename "$f")  >/dev/null &&  echo "$(basename $f) fait maintenant partie de l env " |systemd-cat -t generer_fonction:test_generer_foncton -p info
 done 
 } 
 sourcer 
-: <<'DEADCODE'
-festdansenv(){
-declare -F "$1" 1>&2  2>/dev/null;
-}
-
-utility(){
-[ $# -eq 1 ] || echo "sourcer/utility chem_fichierasourcer"; exit 1
-ch_name="$1"
-nom_fich="$(basename $ch_name)"
-festdansenv  "${nom_fich}" | info "$nom_fich n est pas dans l environnement" 
-source "$f_name" && info "sourcer: ai sourcé $nom_fich"
-festdansenv "${nom_fich}" && info "${nom_fich} est dans l environnement"
-}
-
-
-#[ $# -eq 1 ] && utility  "$1"
-#if test "$#" = "0"  ; then echo "zero params"; 
-while true; do
-if read sce; then 
-#utility "$sce"
-echo "ligne par ligne: $sce"
-fi
-done < /dev/stdin
-#fi
- 
-}
-
-trouver_fichiers_source(){
-for f in $(find "$racine" -type f ! -path '*.swp' ! -path '*.git*' ! -path '*.txt'); do
-echo "$f"
-done 
-}
-
-trouver_fichiers_source |sourcer
-DEADCODE
 
 #. ~/bin/generer_fonction/
 

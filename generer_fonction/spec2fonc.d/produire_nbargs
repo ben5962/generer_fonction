@@ -1,14 +1,15 @@
 mmm(){ mo="vrai"; [ "$mo" = "vrai" ] && echo "[PRODUIRE NBARGS]: $*"; }
-p_vars(){ set -o posix; echo "$(declare)"   ; set +o posix ; }
+#p_vars(){ set -o posix; echo "$(declare)"   ; set +o posix ; }
 racine(){ echo "$(find -name generer_fonction -type d)" ; }
 die(){ echo "$*" 1>&2 ; exit 1; }
 
 produire_nbargs(){ 
 #includes
 #mmm "getbparam se trouve : $(find ~ -name 'getnbparam' -type f)"
-source $(find  ~ -name 'getnbparam' -type f)
+chem_fich="$(find  ~ -name 'getnbparam' -type f)"
+declare -F $(basename $chem_fich)  > /dev/null || source "$chem_fich" && echo "ai sourcé $chem_fich" |journald-cat -t generer_fonction:produire_nbargs -p info
 #nbargs 
-mmm "nbargs: $#"
+echo "nbargs: $#" |journald-cat -t "generer_fonctoin:produire_nbargs" -p info
 [ $# -eq 2 ] || die "produire_nbargs chaineParamsSepParVirgule nomfonc"
 # init vars
 local PARAMS="$1"
