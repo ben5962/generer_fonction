@@ -82,3 +82,7 @@ COMMENT
 # il existe parafly et paexec comme alternative à parallel
 #grep -r -P 'journald-cat' --files-with-matches --exclude=*.txt |parallel -j+0 'sed --in-place=.bkp "s/journald-cat/systemd-cat/;" {}'
 # il n y a plus qu a faire un in-place
+#supprimer les fichiers de backup mais une seule ligne trouvéé? entre ' '!
+#find /home/corentin/bin/depot_generer_fonction -type f -name '*.bkp' !  -path '*.git*' |parallel -j+0 'rm {}' 
+#find /home/corentin/bin/depot_generer_fonction -type f -name '*.bkp' ! -path '*.git*'
+

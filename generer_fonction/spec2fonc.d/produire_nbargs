@@ -7,9 +7,9 @@ produire_nbargs(){
 #includes
 #mmm "getbparam se trouve : $(find ~ -name 'getnbparam' -type f)"
 chem_fich="$(find  ~ -name 'getnbparam' -type f)"
-declare -F $(basename $chem_fich)  > /dev/null || source "$chem_fich" && echo "ai sourcé $chem_fich" |journald-cat -t generer_fonction:produire_nbargs -p info
+declare -F $(basename $chem_fich)  > /dev/null || source "$chem_fich" && echo "ai sourcé $chem_fich" |systemd-cat -t generer_fonction:produire_nbargs -p info
 #nbargs 
-echo "nbargs: $#" |journald-cat -t "generer_fonctoin:produire_nbargs" -p info
+echo "nbargs: $#" |systemd-cat -t "generer_fonctoin:produire_nbargs" -p info
 [ $# -eq 2 ] || die "produire_nbargs chaineParamsSepParVirgule nomfonc"
 # init vars
 local PARAMS="$1"

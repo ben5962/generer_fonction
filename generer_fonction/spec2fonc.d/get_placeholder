@@ -9,7 +9,7 @@ done
 #includes
 for f in $(echo "produire_placeholders renvoyer_skel_fonction" |tr ' ' '\n'); do
 chem_fich=$(find ~ -name "$f" -type f)
-declare -F "$f" >/dev/null || source "$chem_fich" && declare -F "$chem_fich" >/dev/null && echo "$f fait désormais partie de l environnement" |journald-cat -t generer_fonction:get_placeholder -p info
+declare -F "$f" >/dev/null || source "$chem_fich" && declare -F "$chem_fich" >/dev/null && echo "$f fait désormais partie de l environnement" |systemd-cat -t generer_fonction:get_placeholder -p info
 #source "$(find ~ -name 'produire_placeholders' -type f)"
 #source "$(find ~ -name 'renvoyer_skel_fonction' -type f)"
 done
@@ -23,10 +23,10 @@ local mot="$1"
 local liste_mots="$2"
 
 local liste_placeholders=$(produire_placeholders "$liste_mots")
-echo "liste_placeholders vaut $liste_placeholders" |journald-cat -t generer_fonction:get_placeholder -p info
+echo "liste_placeholders vaut $liste_placeholders" |systemd-cat -t generer_fonction:get_placeholder -p info
 #echo "$liste" |wc --words
 local pos=$(position "$mot" "$liste_mots")
-echo "pos vaut: $pos"|journald-cat -t generer_fonction:get_placeholder -p info
+echo "pos vaut: $pos"|systemd-cat -t generer_fonction:get_placeholder -p info
 placeholder=$(position2mot "${pos}" "$liste_placeholders")
 echo "$placeholder" 
 }
