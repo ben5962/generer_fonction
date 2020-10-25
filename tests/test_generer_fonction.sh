@@ -9,7 +9,7 @@ racine=$(find ~ -type d -name generer_fonction |head -n 1)
 
 
 sourcer(){
-for f in $(find "$racine" -type f ! -path '*.swp' ! -path '*.git*' ! -path '*.txt' ! -path '*test*' ); do
+for f in $(find "$racine" -type f ! -path '*.swp' ! -path '*.git*' ! -path '*.txt' ! -path 'tests' ); do
 #echo "$f"; 
 declare -F $( basename "$f" ) > /dev/null || echo "$(basename $f) est hors env" |systemd-cat -t generer_fonction:test_generer_foncton -p info && source "$f" > /dev/null  &&  declare -F $(basename "$f")  >/dev/null &&  echo "$(basename $f) fait maintenant partie de l env " |systemd-cat -t generer_fonction:test_generer_foncton -p info
 done 
