@@ -4,7 +4,7 @@
 #refactor if necessary and prudent
 #[ $(
 
-:<<COMMENTEDOUT
+: <<'COMMENTEDOUT'
 VRAI=0
 FAUX=1
 prudent(){
@@ -40,12 +40,45 @@ sed --in-place=.bak 's/'"$chaine_eronnee"'/produire_nbargs \"\$PARAMS\" \"\$NOM_
 necessaire
 prudent && necessaire && corriger_appel_de_produire_nbargs
 COMMENTEDOUT
-#:<<COMMENT
+
+: <<'COMMENT'
 for f in $(find . -type f ! -path '*.txt' ! -path '*.swp' !  -path '*.git*' ); do 
 echo "trying $f"
 #sed -n 's/source \([a-z]+\)/declare -f \1 \|\| source \1 / p;' "${f}"
 grep  'source' $f
 done
+COMMENT
+: <<'COMMENT'
+for f in $(find . -type f ! -path '*.txt' ! -path '*.swp' !  -path '*.git*' ); do 
+sed  's/declare -F \([a-zA-Z_&\"]+\)/declare -F \1 2>\&1 /;' $f 
+done
+COMMENT
 
-
-
+#no journald-cat! it sis systemd-cat !
+# verif de la norme
+#type systemd-cat && echo "existe"
+#type journald-cat || echo "existe pas"
+#grep -r -P 'systemd-cat' 
+# selection des fichiers
+#grep -r -P 'journald-cat' --files-with-matches --exclude=*.txt
+# decompte good/bad
+#grep -r -P 'systemd-cat' |wc --lines
+#grep -r -P 'journald-cat' |wc --lines
+#selection des lignes
+#grep -r -P 'journald-cat' --no-filename
+# essai mise en place d un placeholder + correction dans le flux
+#grep -r -P 'journald-cat' --no-filename --exclude=*.txt |sed 's/journald-cat/PH/;' | sed 's/PH/systemd-cat/;'
+#  il faut maintenant corriger chaque fichier sur site.
+# - sed peut corriger sur site avec sed --in_place=.backup MODIF NOMFICHIER
+# faire un point git avant appli du patch
+# grep peut fournir  le nom des fichiers
+# xargs devrait rendre possible l utilisation de commandes  a->"a b c d" x xargs x bb ->  bb x a; bbx b; bbxc...
+#marche pas et variante de grep differente
+#echo "a b c d" |xargs echo 
+# en fait xargs regroupe les multiples sorties en une ligne donc exploitable par bcle for ensuite
+#grep -r -P 'journald-cat' --files-with-matches --exclude=*.txt |xargs echo
+#type parallel || echo pas installe
+# il existe xe comme alt à xargs, mais aussi apply (pas trv deb)
+# il existe parafly et paexec comme alternative à parallel
+#grep -r -P 'journald-cat' --files-with-matches --exclude=*.txt |parallel -j+0 'sed --in-place=.bkp "s/journald-cat/systemd-cat/;" {}'
+# il n y a plus qu a faire un in-place
